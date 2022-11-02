@@ -39,9 +39,10 @@ type UrlDay struct {
 type MailChimpSent struct {
 	TotalItems int `json:"total_items"`
 	Campaigns  []struct {
-		Id         string `json:"id"`
-		ArchiveUrl string `json:"archive_url"`
-		Status     string `json:"status"`
+		Id             string `json:"id"`
+		ArchiveUrl     string `json:"archive_url"`
+		LongArchiveUrl string `json:"long_archive_url"`
+		Status         string `json:"status"`
 	} `json:"campaigns"`
 }
 
@@ -201,6 +202,9 @@ func GetLatestMailChimpCampaignUrl(conf Configuration) string {
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
 
+	//tempBodyString := string(bodyBytes)
+	//fmt.Print(tempBodyString)
+
 	// Convert response body to MailChimpSent struct
 	mailchimpSent := MailChimpSent{}
 	err = json.Unmarshal(bodyBytes, &mailchimpSent)
@@ -210,7 +214,7 @@ func GetLatestMailChimpCampaignUrl(conf Configuration) string {
 
 	currentUrl := ""
 	if len(mailchimpSent.Campaigns) == 1 {
-		currentUrl = mailchimpSent.Campaigns[0].ArchiveUrl
+		currentUrl = mailchimpSent.Campaigns[0].LongArchiveUrl
 	}
 
 	return currentUrl
